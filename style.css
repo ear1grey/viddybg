@@ -1,0 +1,21 @@
+body {
+    font-family: sans-serif;
+    line-height: 1.8em;
+}
+
+article {
+    padding: 2em;
+    max-width: 30em;
+    margin: 2em auto;
+    background: rgba(51, 102, 153, 0.7);
+    border-radius: .2em;
+    color: #EFEFEF;
+    font-size: 130%;
+    text-shadow: 0 0.2ex 0.1ex rgba(0,0,0,0.5);
+    box-shadow: 0 0.2ex 0.1ex rgba(0,0,0,0.5) inset;
+}
+
+p {
+    text-align: center;
+    text-shadow: 0 0.2ex 0.1ex rgba(255,255,255,1), 0 0 0.5ex rgba(255,255,255,1), 0 0 1ex rgba(255,255,255,1);
+}
