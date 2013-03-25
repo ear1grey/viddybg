@@ -8,7 +8,7 @@ ViddyBG
 3. ...
 4. Profit!
 
-Try it out a [http://5minutefork.com/ear1grey/viddybg](http://5minutefork.com/ear1grey/viddybg)
+Try it out at [http://5minutefork.com/ear1grey/viddybg](http://5minutefork.com/ear1grey/viddybg)
 
 Suggestions for improvement, alternative uses, bug reports, issues and pull requests are all very welcome.
 
