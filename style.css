@@ -15,6 +15,10 @@ article {
     box-shadow: 0 0.2ex 0.1ex rgba(0,0,0,0.5) inset;
 }
 
+article:hover{
+	opacity:0.1;
+}
+
 p {
     text-align: center;
     text-shadow: 0 0.2ex 0.1ex rgba(255,255,255,1), 0 0 0.5ex rgba(255,255,255,1), 0 0 1ex rgba(255,255,255,1);
