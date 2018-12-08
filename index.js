@@ -17,10 +17,7 @@ window.addEventListener("load", () => {
 		const xoff = midxpage-midximg;
 		const styleon = `opacity:1.0; min-width:100%; min-height:100%; z-index:-1; position: absolute; top: 0; left: ${xoff}px;`;
 		vid.setAttribute("style", styleon);
-
-		console.log("Resizing", styleon);
 	}
-
 
     function gmError(e) {
 		console.log("Media Error",e);
@@ -41,7 +38,7 @@ window.addEventListener("load", () => {
 		v.id='viddybg';
 		v.style=styleoff;
 		d.appendChild(v);
-		document.body.appendChild(d);
+		document.body.insertBefore(d, document.body.firstElementChild);
 
 		v.addEventListener("playing", () => {
 			setTimeout(resizer, 50);
