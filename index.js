@@ -10,7 +10,6 @@ window.addEventListener("load", () => {
 	let on = false;
 
     function resizer() {
-		console.log("Resizing");
 		
 		const midximg = vid.clientWidth/2;
 		const midxpage = document.body.clientWidth/2;
@@ -33,7 +32,7 @@ window.addEventListener("load", () => {
 
 	function injectVid() {
 		const d = document.createElement("div");
-		d.style="overflow: hidden; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;";
+		d.style="overflow: hidden; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;";
 		const v = document.createElement("video");
 		v.id='viddybg';
 		v.style=styleoff;
