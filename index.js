@@ -1,43 +1,60 @@
-(() => {
+window.addEventListener("load", () => {
 
 	"use strict";
 
 	const key = 86;
 	const constraints = { audio: false, video: { width: 1280, height: 720 } }; 
-	const styleon = "width:100%;opacity:1.0;z-index:-1; position: absolute; top: 0; left: 0;";
     const styleoff = "opacity: 0.0;";
+	const vid = injectVid();
 
-	let vid;
 	let on = false;
+
+    function resizer() {
+		console.log("Resizing");
+		
+		const midximg = vid.clientWidth/2;
+		const midxpage = document.body.clientWidth/2;
+		const xoff = midxpage-midximg;
+		const styleon = `opacity:1.0; min-width:100%; min-height:100%; z-index:-1; position: absolute; top: 0; left: ${xoff}px;`;
+		vid.setAttribute("style", styleon);
+
+		console.log("Resizing", styleon);
+	}
+
 
     function gmError(e) {
 		console.log("Media Error",e);
 	}
 
     function gmSuccess(stream) {
-		vid.setAttribute("style", styleon);
 		vid.srcObject = stream;
 		vid.onloadedmetadata = function(e) {
-		  vid.play();
+			vid.play();
+			resizer();
 		};
 	}
 
 	function injectVid() {
+		const d = document.createElement("div");
+		d.style="overflow: hidden; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;";
 		const v = document.createElement("video");
 		v.id='viddybg';
 		v.style=styleoff;
-		document.body.appendChild(v);
+		d.appendChild(v);
+		document.body.appendChild(d);
+
+		v.addEventListener("playing", () => {
+			setTimeout(resizer, 50);
+		});
+
 		return v;
 	}
 
 	function togglePlayer(ev) {
-		vid = vid || injectVid();
 		if (on) {
 			vid.style = styleoff;
 			vid.pause();
-			delete video.src;
 		} else {
-
 			navigator.mediaDevices
 				.getUserMedia(constraints)
 				.then( gmSuccess, gmError )
@@ -52,6 +69,8 @@
 	};
 
 
-	window.addEventListener("keydown", keyHandler, false);
+	window.addEventListener("keydown", keyHandler);
+	window.addEventListener("resize", resizer);
 
-})();
+	togglePlayer();
+});
