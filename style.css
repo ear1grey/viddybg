@@ -1,18 +1,26 @@
+:root {
+    --txtcol: #fff;
+    --shadcol: rgba(0,0,0,1);
+    --top: 0;
+    --left: 0;
+}
+
 body {
     font-family: sans-serif;
     line-height: 1.8em;
+    color: var(--txtcol);
+    text-shadow:
+       0 0 5em var(--shadcol),
+       0 0 1em var(--shadcol),
+       0 0 0.25em var(--shadcol);
 }
 
 article {
     padding: 2em;
     max-width: 30em;
     margin: 2em auto;
-    background: rgba(51, 102, 153, 0.7);
     border-radius: .2em;
-    color: #EFEFEF;
     font-size: 130%;
-    text-shadow: 0 0.2ex 0.1ex rgba(0,0,0,0.5);
-    box-shadow: 0 0.2ex 0.1ex rgba(0,0,0,0.5) inset;
 }
 
 article:hover{
@@ -21,5 +29,8 @@ article:hover{
 
 p {
     text-align: center;
-    text-shadow: 0 0.2ex 0.1ex rgba(255,255,255,1), 0 0 0.5ex rgba(255,255,255,1), 0 0 1ex rgba(255,255,255,1);
+}
+
+a, a:visited {
+    color: var(--txtcol);
 }
