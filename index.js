@@ -1,72 +1,104 @@
-window.addEventListener("load", () => {
+const TOGGLE_KEY = 'KeyK';
+const FLIP_KEY = 'KeyX';
+const CONSTRAINTS = { audio: false, video: { width: 1280, height: 720 } };
+const STYLE_OFF = 'opacity: 0.0;';
 
-	"use strict";
+const IS_MAC = navigator.platform?.toLowerCase().includes('mac')
+  || navigator.userAgentData?.platform?.toLowerCase().includes('mac');
 
-	const key = 86;
-	const constraints = { audio: false, video: { width: 1280, height: 720 } }; 
-    const styleoff = "opacity: 0.0;";
-	const vid = injectVid();
+let video;
+let isOn = false;
+let isFlipped = true;
 
-	let on = false;
+const styleOn = () => {
+  const midImg = video.clientWidth / 2;
+  const midPage = document.body.clientWidth / 2;
+  const xOff = midPage - midImg;
+  const transform = isFlipped ? 'transform: scaleX(-1);' : '';
+  return `opacity:1.0; min-width:100%; min-height:100%; z-index:-1; position: absolute; top: 0; left: ${xOff}px; ${transform}`;
+};
 
-    function resizer() {
-		
-		const midximg = vid.clientWidth/2;
-		const midxpage = document.body.clientWidth/2;
-		const xoff = midxpage-midximg;
-		const styleon = `opacity:1.0; min-width:100%; min-height:100%; z-index:-1; position: absolute; top: 0; left: ${xoff}px;`;
-		vid.setAttribute("style", styleon);
-	}
+const resizer = () => {
+  if (!video || !isOn) return;
+  video.setAttribute('style', styleOn());
+};
 
-    function gmError(e) {
-		console.log("Media Error",e);
-	}
+const injectVid = () => {
+  const wrapper = document.createElement('div');
+  wrapper.setAttribute(
+    'style',
+    'overflow: hidden; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;',
+  );
 
-    function gmSuccess(stream) {
-		vid.srcObject = stream;
-		vid.onloadedmetadata = function(e) {
-			vid.play();
-			resizer();
-		};
-	}
+  const v = document.createElement('video');
+  v.id = 'viddybg';
+  v.setAttribute('style', STYLE_OFF);
 
-	function injectVid() {
-		const d = document.createElement("div");
-		d.style="overflow: hidden; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;";
-		const v = document.createElement("video");
-		v.id='viddybg';
-		v.style=styleoff;
-		d.appendChild(v);
-		document.body.insertBefore(d, document.body.firstElementChild);
+  wrapper.append(v);
+  document.body.prepend(wrapper);
 
-		v.addEventListener("playing", () => {
-			setTimeout(resizer, 50);
-		});
+  v.addEventListener('playing', () => {
+    setTimeout(resizer, 50);
+  });
 
-		return v;
-	}
+  return v;
+};
 
-	function togglePlayer(ev) {
-		if (on) {
-			vid.style = styleoff;
-			vid.pause();
-		} else {
-			navigator.mediaDevices
-				.getUserMedia(constraints)
-				.then( gmSuccess, gmError )
-		}
-		on = !on;
-	}
+const startStream = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia(CONSTRAINTS);
+    video.srcObject = stream;
+    video.addEventListener(
+      'loadedmetadata',
+      () => {
+        video.play();
+        resizer();
+      },
+      { once: true },
+    );
+  } catch (err) {
+    console.log('Media Error', err);
+  }
+};
 
-	function keyHandler(e) {
-		if (e.altKey && e.ctrlKey && e.keyCode == key) {
-			togglePlayer();
-		}
-	};
+const togglePlayer = () => {
+  if (isOn) {
+    video.setAttribute('style', STYLE_OFF);
+    video.pause();
+  } else {
+    startStream();
+  }
+  isOn = !isOn;
+};
 
+const toggleFlip = () => {
+  isFlipped = !isFlipped;
+  if (isOn) resizer();
+};
 
-	window.addEventListener("keydown", keyHandler);
-	window.addEventListener("resize", resizer);
+// Accept Ctrl+Alt on any platform, plus Cmd+Alt on macOS.
+const hasModifiers = (e) => e.altKey && (e.ctrlKey || (IS_MAC && e.metaKey));
 
-	togglePlayer();
-});
+const keyHandler = (e) => {
+  if (!hasModifiers(e)) return;
+  if (e.code === TOGGLE_KEY) {
+    togglePlayer();
+  } else if (e.code === FLIP_KEY) {
+    toggleFlip();
+  }
+};
+
+const init = () => {
+  video = injectVid();
+  window.addEventListener('keydown', keyHandler);
+  window.addEventListener('resize', resizer);
+  togglePlayer();
+};
+
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', init, { once: true });
+} else {
+  init();
+}
+
+export { togglePlayer, toggleFlip, init };
